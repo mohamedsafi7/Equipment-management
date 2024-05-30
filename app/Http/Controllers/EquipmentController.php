@@ -48,8 +48,9 @@ class EquipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Equipment $equipment)
+    public function show(string $id)
     {
+        $equipment = Equipment::findOrFail($id);
         return view('show', compact('equipment'));
     }
 

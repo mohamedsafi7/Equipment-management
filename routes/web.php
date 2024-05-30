@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Middleware\CheckAdminRole;
+
 
 Route::get('/index', [EquipmentController::class, 'index'])->name('equipments.index');
 
@@ -13,7 +15,7 @@ Route::get('/equipments/create', [EquipmentController::class, 'create'])->name('
 Route::post('/equipments', [EquipmentController::class, 'store'])->name('equipments.store');
 
 // Display the specified equipment
-Route::get('/equipments/{equipment}', [EquipmentController::class, 'show'])->name('equipments.show');
+Route::get('/equipments/{id}', [EquipmentController::class, 'show'])->name('equipments.show');
 
 // Show the form for editing the specified equipment
 Route::get('/equipments/{equipment}/edit', [EquipmentController::class, 'edit'])->name('equipments.edit');
@@ -32,3 +34,8 @@ Route::post('/register', [UserController::class, 'registerUser']);
 Route::get('/login', [UserController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [UserController::class, 'loginUser']);
 Route::post('/logout', [UserController::class, 'logoutUser'])->middleware(['auth:sanctum'])->name('logout');
+
+Route::middleware('\App\Http\Middleware\CheckAdminRole::class')->get('/users',  [UserController::class, 'roles'])->name('users.index');
+Route::patch('/users/{id}',  [UserController::class, 'updateRole'])->name('users.updateRole');
+Route::delete('/users/{id}',  [UserController::class, 'destroy'])->name('users.destroy');
+

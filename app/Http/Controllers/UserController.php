@@ -21,6 +21,22 @@ class UserController extends Controller
     {
         return view('register');
     }
+    public function roles()
+    {
+        $users = User::all();
+        return view('users', compact('users'));    
+    }
+    public function updateRole($id)
+    {
+        $user = User::findOrFail($id);
+        
+        $user->role = ($user->role === 'admin') ? 'technicien' : 'admin';
+
+        $user->save();
+
+        return redirect()->route('users.index')->with('success', 'User role updated successfully.');
+    }
+
 
     /**
      * Create a new user.
@@ -112,6 +128,35 @@ public function logoutUser(Request $request)
             'message' => $th->getMessage(),
         ]);
     }
+}
+/**
+     * Delete a user and update their role.
+     *
+     * @param  int  $id
+     * @param  string  $role
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id, $role)
+    {
+        // Only proceed if the authenticated user is an admin
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'Unauthorized access.');
+        }
+
+        // Find the user
+        $user = User::findOrFail($id);
+
+        // Update user role based on provided role parameter
+        $user->role = $role;
+
+        // Save the updated user
+        $user->save();
+
+        // Delete the user
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    
 }
 
 }

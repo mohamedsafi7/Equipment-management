@@ -34,6 +34,25 @@
         th {
             background-color: #f2f2f2;
         }
+        .btn {
+            width: 110px;
+            margin-bottom: 4px;
+            display: inline-block;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
         .profile-icon {
             float: right;
             margin-right: 20px;
@@ -63,7 +82,6 @@
         .profile-dropdown li:hover {
             background-color: #f2f2f2;
         }
-
     </style>
 </head>
 <body>
@@ -89,10 +107,11 @@
                     </button>
                 </a>
             </span>
+
             <span style="float: left; margin-left: 20px;">
-                <a href="{{ route('users.index') }}" style="text-decoration: none;">
-                    <button style="padding: 10px 20px; background-color: #81197c; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
-                        Users List
+                <a href="{{ route('equipments.index') }}" style="text-decoration: none;">
+                    <button style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+                        Equipments List
                     </button>
                 </a>
             </span>
@@ -103,53 +122,46 @@
     </header>
 <div class="container">
     
-    <h1>Liste des équipements</h1>
+    <h1>Liste des utilisateurs</h1>
 
     <table>
         <thead>
             <tr>
-                <th>Type d'équipement</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Numéro de série</th>
-                <th>Date d'acquisition</th>
-                <th>Fréquence de maintenance recommandée</th>
-                <th>Actions</th> 
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($equipments as $equipment)
+            @foreach($users as $user)
             <tr>
-                <td>{{ $equipment->equipment_type }}</td>
-                <td>{{ $equipment->name }}</td>
-                <td>{{ $equipment->description }}</td>
-                <td>{{ $equipment->serial_number }}</td>
-                <td>{{ $equipment->acquisition_date }}</td>
-                <td>{{ $equipment->maintenance_frequency }}</td>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                <td>{{ $user->role }}</td>
                 <td>
-                    <a href="{{ route('equipments.show', $equipment->id) }}" style=" text-decoration: none; color: #007bff; margin-right: 10px;">Details</a>
-                    @if(Auth::user()->role === 'admin')
-                        <a href="{{ route('equipments.edit', $equipment->id) }}" style="text-decoration: none;">
-                            <button style="width:80px; padding: 5px 10px; background-color: #2878a7; color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                                Edit
-                            </button>
-                        </a>
-                        <form action="{{ route('equipments.destroy', $equipment->id) }}" method="POST" style="display: inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" style="width:80px; padding: 5px 10px; background-color: #dc3545; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
-                                Delete
-                            </button>
-                        </form>
-                    @endif
+                    <form action="{{ route('users.updateRole', $user->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-primary">
+                            @if($user->role === 'admin')
+                                Unadmin
+                            @else
+                                Set as Admin
+                            @endif
+                        </button>
+                    </form>
+                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
                 </td>
-                
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
-
 <script>
     function toggleDropdown() {
         var dropdown = document.getElementById("profileDropdown");
